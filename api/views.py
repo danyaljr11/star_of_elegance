@@ -17,36 +17,34 @@ def custom_response(state, message, data):
 class ServiceListView(generics.ListAPIView):
     queryset = Service.objects.all()
     serializer_class = Service_Serializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
 
 
 class ServiceCreateView(generics.CreateAPIView):
     queryset = Service.objects.all()
     serializer_class = Service_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 class ServiceUpdateView(generics.UpdateAPIView):
     queryset = Service.objects.all()
     serializer_class = Service_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 class ServiceDeleteView(generics.DestroyAPIView):
     queryset = Service.objects.all()
     serializer_class = Service_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 # Upload Service Picture View
 class UploadServicePictureView(APIView):
     parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
     def post(self, request, pk, *args, **kwargs):
         service = Service.objects.get(pk=pk)
@@ -61,36 +59,36 @@ class UploadServicePictureView(APIView):
 class ProjectListView(generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = Project_Serializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAuthenticated]
+#    authentication_classes = [TokenAuthentication]
 
 
 class ProjectCreateView(generics.CreateAPIView):
     queryset = Project.objects.all()
     serializer_class = Project_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 class ProjectUpdateView(generics.UpdateAPIView):
     queryset = Project.objects.all()
     serializer_class = Project_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 class ProjectDeleteView(generics.DestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = Project_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 # Upload Before and After Pictures Views
 class ProjectUploadBeforePicturesView(APIView):
     parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
     def post(self, request, pk, *args, **kwargs):
         project = Project.objects.get(pk=pk)
@@ -103,8 +101,8 @@ class ProjectUploadBeforePicturesView(APIView):
 
 class ProjectUploadAfterPicturesView(APIView):
     parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
     def post(self, request, pk, *args, **kwargs):
         project = Project.objects.get(pk=pk)
@@ -119,87 +117,87 @@ class ProjectUploadAfterPicturesView(APIView):
 class RateListView(generics.ListAPIView):
     queryset = Rate.objects.all()
     serializer_class = Rate_Serializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAuthenticated]
+#    authentication_classes = [TokenAuthentication]
 
 
 class RateCreateView(generics.CreateAPIView):
     queryset = Rate.objects.all()
     serializer_class = Rate_Serializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAuthenticated]
+#    authentication_classes = [TokenAuthentication]
 
 
 class RateUpdateView(generics.UpdateAPIView):
     queryset = Rate.objects.all()
     serializer_class = Rate_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 class RateDeleteView(generics.DestroyAPIView):
     queryset = Rate.objects.all()
     serializer_class = Rate_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 # Message Views
 class MessageListView(generics.ListAPIView):
     queryset = Message.objects.all()
     serializer_class = Message_Serializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAuthenticated]
+#    authentication_classes = [TokenAuthentication]
 
 
 class MessageCreateView(generics.CreateAPIView):
     queryset = Message.objects.all()
     serializer_class = Message_Serializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAuthenticated]
+#    authentication_classes = [TokenAuthentication]
 
 
 class MessageUpdateView(generics.UpdateAPIView):
     queryset = Message.objects.all()
     serializer_class = Message_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 class MessageDeleteView(generics.DestroyAPIView):
     queryset = Message.objects.all()
     serializer_class = Message_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 # Request Views
 class RequestListView(generics.ListAPIView):
     queryset = Request.objects.all()
     serializer_class = Request_Serializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAuthenticated]
+#    authentication_classes = [TokenAuthentication]
 
 
 class RequestCreateView(generics.CreateAPIView):
     queryset = Request.objects.all()
     serializer_class = Request_Serializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAuthenticated]
+#    authentication_classes = [TokenAuthentication]
 
 
 class RequestUpdateView(generics.UpdateAPIView):
     queryset = Request.objects.all()
     serializer_class = Request_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 class RequestDeleteView(generics.DestroyAPIView):
     queryset = Request.objects.all()
     serializer_class = Request_Serializer
-    permission_classes = [permissions.IsAdminUser]
-    authentication_classes = [TokenAuthentication]
+#    permission_classes = [permissions.IsAdminUser]
+#    authentication_classes = [TokenAuthentication]
 
 
 # Login View
