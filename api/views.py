@@ -1,12 +1,21 @@
-from rest_framework import generics, permissions, status
+from django.shortcuts import render
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.models import Token
 from .models import Service, Project, Rate, Message, Request
 from .serializers import Service_Serializer, Project_Serializer, Rate_Serializer, Message_Serializer, Request_Serializer
+from django.core.files.storage import default_storage
+from django.conf import settings
+import os
+from django.core.files.storage import default_storage
+from django.conf import settings
+
+
+def index(request):
+    return render(request, "index.html")
 
 
 def custom_response(state, message, data):
@@ -43,16 +52,22 @@ class ServiceDeleteView(generics.DestroyAPIView):
 # Upload Service Picture View
 class UploadServicePictureView(APIView):
     parser_classes = (MultiPartParser, FormParser)
-#    permission_classes = [permissions.IsAdminUser]
-#    authentication_classes = [TokenAuthentication]
 
     def post(self, request, pk, *args, **kwargs):
         service = Service.objects.get(pk=pk)
         picture = request.FILES.get('picture')
-        picture_link = request.build_absolute_uri(picture.url)
-        service.picture = picture
+
+        if not picture:
+            return Response(custom_response(False, "No picture provided", None), status=status.HTTP_400_BAD_REQUEST)
+
+        # Save the file to the default storage
+        file_path = default_storage.save(f'service_pictures/{picture.name}', picture)
+        picture_url = f"{settings.MEDIA_URL}{file_path}"
+
+        service.picture = file_path
         service.save()
-        return Response(custom_response(True, "Service picture uploaded successfully", picture_link), status=status.HTTP_201_CREATED)
+
+        return Response(custom_response(True, "Service picture uploaded successfully", request.build_absolute_uri(picture_url)), status=status.HTTP_201_CREATED)
 
 
 # Project Views
@@ -80,41 +95,84 @@ class ProjectUpdateView(generics.UpdateAPIView):
 class ProjectDeleteView(generics.DestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = Project_Serializer
-#    permission_classes = [permissions.IsAdminUser]
-#    authentication_classes = [TokenAuthentication]
+
+    def delete(self, request, *args, **kwargs):
+        project = self.get_object()
+
+        # حذف الصور المرتبطة بالمشروع من التخزين
+        def delete_images(image_list):
+            if image_list:
+                for image_url in image_list:
+                    # استخراج المسار الفعلي للملف من `MEDIA_ROOT`
+                    relative_path = image_url.replace(request.build_absolute_uri(settings.MEDIA_URL), "")
+                    file_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+                    # حذف الملف إن وجد
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+
+        delete_images(project.before_pictures)
+        delete_images(project.after_pictures)
+
+        # حذف المشروع بعد حذف الصور
+        response = super().delete(request, *args, **kwargs)
+        return Response(custom_response(True, "Project and its images deleted successfully", None), status=status.HTTP_200_OK)
 
 
 # Upload Before and After Pictures Views
 class ProjectUploadBeforePicturesView(APIView):
     parser_classes = (MultiPartParser, FormParser)
-#    permission_classes = [permissions.IsAdminUser]
-#    authentication_classes = [TokenAuthentication]
 
     def post(self, request, pk, *args, **kwargs):
         project = Project.objects.get(pk=pk)
         before_pictures = request.FILES.getlist('before_pictures')
-        before_picture_links = [request.build_absolute_uri(picture.url) for picture in before_pictures]
-        project.before_pictures.extend(before_picture_links)
+
+        if not before_pictures:
+            return Response(custom_response(False, "No before pictures provided", None), status=status.HTTP_400_BAD_REQUEST)
+
+        before_picture_links = project.before_pictures if project.before_pictures else []  # تحميل القائمة الحالية
+
+        for picture in before_pictures:
+            file_path = default_storage.save(f'project_pictures/before/{picture.name}', picture)
+            picture_url = request.build_absolute_uri(f"{settings.MEDIA_URL}{file_path}")
+            before_picture_links.append(picture_url)  # إضافة الصورة الجديدة للقائمة
+
+        project.before_pictures = before_picture_links  # تحديث القائمة في قاعدة البيانات
         project.save()
+
         return Response(custom_response(True, "Before pictures uploaded successfully", before_picture_links), status=status.HTTP_201_CREATED)
 
 
 class ProjectUploadAfterPicturesView(APIView):
     parser_classes = (MultiPartParser, FormParser)
-#    permission_classes = [permissions.IsAdminUser]
-#    authentication_classes = [TokenAuthentication]
 
     def post(self, request, pk, *args, **kwargs):
         project = Project.objects.get(pk=pk)
         after_pictures = request.FILES.getlist('after_pictures')
-        after_picture_links = [request.build_absolute_uri(picture.url) for picture in after_pictures]
-        project.after_pictures.extend(after_picture_links)
+
+        if not after_pictures:
+            return Response(custom_response(False, "No after pictures provided", None), status=status.HTTP_400_BAD_REQUEST)
+
+        after_picture_links = project.after_pictures if project.after_pictures else []  # تحميل القائمة الحالية
+
+        for picture in after_pictures:
+            file_path = default_storage.save(f'project_pictures/after/{picture.name}', picture)
+            picture_url = request.build_absolute_uri(f"{settings.MEDIA_URL}{file_path}")
+            after_picture_links.append(picture_url)  # إضافة الصورة الجديدة للقائمة
+
+        project.after_pictures = after_picture_links  # تحديث القائمة في قاعدة البيانات
         project.save()
+
         return Response(custom_response(True, "After pictures uploaded successfully", after_picture_links), status=status.HTTP_201_CREATED)
 
 
 # Rate Views
 class RateListView(generics.ListAPIView):
+    queryset = Rate.objects.filter(state=True)  # Only get rates where state=True
+    serializer_class = Rate_Serializer
+
+
+class RateListAllView(generics.ListAPIView):
     queryset = Rate.objects.all()
     serializer_class = Rate_Serializer
 #    permission_classes = [permissions.IsAuthenticated]

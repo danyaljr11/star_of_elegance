@@ -1,15 +1,21 @@
+import os
+
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
+from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 from api.views import (ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView,
-                    ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView,
-                    ProjectUploadBeforePicturesView, ProjectUploadAfterPicturesView,
-                    RateListView, RateCreateView, RateUpdateView, RateDeleteView,
-                    MessageListView, MessageCreateView, MessageUpdateView, MessageDeleteView,
-                    RequestListView, RequestCreateView, RequestUpdateView, RequestDeleteView,
-                    LoginView, UploadServicePictureView)
+                       ProjectListView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView,
+                       ProjectUploadBeforePicturesView, ProjectUploadAfterPicturesView,
+                       RateListView, RateCreateView, RateUpdateView, RateDeleteView,
+                       MessageListView, MessageCreateView, MessageUpdateView, MessageDeleteView,
+                       RequestListView, RequestCreateView, RequestUpdateView, RequestDeleteView,
+                       LoginView, UploadServicePictureView, RateListAllView, index)
 
 urlpatterns = [
+    path('', TemplateView.as_view(template_name='index.html'), name='index'),
     path('admin/', admin.site.urls),
 
     # Service URLs
@@ -29,6 +35,7 @@ urlpatterns = [
 
     # Rate URLs
     path('api/rates/', RateListView.as_view(), name='rate-list'),
+    path('api/rates/all/', RateListAllView.as_view(), name='rate-list-all'),
     path('api/rates/create/', RateCreateView.as_view(), name='rate-create'),
     path('api/rates/<int:pk>/update/', RateUpdateView.as_view(), name='rate-update'),
     path('api/rates/<int:pk>/delete/', RateDeleteView.as_view(), name='rate-delete'),
@@ -51,3 +58,4 @@ urlpatterns = [
     # Upload Service Picture URL
     path('api/token/', obtain_auth_token, name='api_token_auth'),
 ]
+

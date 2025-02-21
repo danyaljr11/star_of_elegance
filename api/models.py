@@ -24,6 +24,7 @@ class Rate(models.Model):
     name = models.CharField(max_length=100)
     message = models.TextField()
     rate = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    state = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name} ({self.rate})"
@@ -55,7 +56,7 @@ class Request(models.Model):
     service_name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='new')
-    type = models.CharField(max_length=15, choices=TYPE_CHOICES, default=None)
+    service_type = models.CharField(max_length=15, choices=TYPE_CHOICES, default=None)
 
     def __str__(self):
         return f"{self.name} ({self.status})"
